@@ -1,0 +1,88 @@
+version: '3'
+
+services:
+  fusionauth:
+    restart: $DOCKER_RESTART_POLICY
+    image: fusionauth/fusionauth-app:latest
+    depends_on:
+      - db
+    environment:
+      DATABASE_URL: jdbc:postgresql://db:5432/${FUSIONAUTH_DATABASE_NAME}
+      DATABASE_ROOT_USERNAME: ${DATABASE_USERNAME}
+      DATABASE_ROOT_PASSWORD: ${DATABASE_PASSWORD}
+      DATABASE_USERNAME: ${DATABASE_USERNAME}
+      DATABASE_PASSWORD: ${DATABASE_PASSWORD}
+      FUSIONAUTH_APP_MEMORY: ${FUSIONAUTH_APP_MEMORY}
+      FUSIONAUTH_APP_RUNTIME_MODE: ${FUSIONAUTH_APP_RUNTIME_MODE}
+      FUSIONAUTH_APP_URL: http://127.0.0.1:${FUSIONAUTH_PORT}
+      SEARCH_TYPE: database
+    networks:
+      - db
+    links:
+      - db:db
+    ports:
+      - 0.0.0.0:${FUSIONAUTH_PORT}:9011
+
+  db:
+    image: postgres:15.4
+    restart: $DOCKER_RESTART_POLICY
+    volumes:
+      - /var/lib/postgresql/data
+    ports:
+      - 127.0.0.1:$DATABASE_PORT:5432
+    environment:
+      POSTGRES_DB: $DATABASE_NAME,$FUSIONAUTH_DATABASE_NAME
+      POSTGRES_USER: $DATABASE_USERNAME
+      POSTGRES_PASSWORD: $DATABASE_PASSWORD
+    networks:
+      - db
+
+  redis:
+    image: redis:7.2
+    ports:
+      - 127.0.0.1:$REDIS_PORT:6379
+    restart: $DOCKER_RESTART_POLICY
+    volumes:
+      - /var/lib/redis/data
+
+  alethio:
+    image: alethio/ethereum-lite-explorer:latest
+    container_name: blockchain-explorer
+    restart: $DOCKER_RESTART_POLICY
+    ports:
+      - '8012:80'
+    environment:
+      APP_NODE_URL: $APP_NODE_URL
+
+  vault:
+    image: hashicorp/vault:latest
+    ports:
+      - '0.0.0.0:${VAULT_PORT:-8200}:8200'
+    volumes:
+      - ./config.hcl:/vault/config/config.hcl:ro
+      - ./vault_data:/vault/data
+    cap_add:
+      - IPC_LOCK
+    command: server
+    environment:
+      - TZ=Europe/Berlin
+    restart: $DOCKER_RESTART_POLICY
+    networks:
+      - db
+
+  sftp:
+    image: atmoz/sftp:latest
+    container_name: sftp_server
+    ports:
+      - "2222:22"
+    user: root
+    volumes:
+      - ./sftp-data:/home/$SFTP_USERNAME
+    environment:
+      SFTP_USERS: "$SFTP_USERNAME:$SFTP_PASSWORD:1001"
+    networks:
+      - db
+
+networks:
+  db:
+    driver: bridge

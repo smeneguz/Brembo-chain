@@ -1,0 +1,25 @@
+{
+	"name": "@brembochain/contracts",
+	"version": "1.0.0",
+	"description": "",
+	"scripts": {
+		"test": "truffle test",
+		"ganache": "ganache -s 1234 -p 7545 --networkId 1337",
+		"deploy": "truffle migrate --network private"
+	},
+	"private": true,
+	"keywords": [],
+	"author": "",
+	"license": "ISC",
+	"dependencies": {
+		"@truffle/hdwallet-provider": "^2.1.2",
+		"dotenv": "^16.0.3",
+		"ganache": "^7.5.0",
+		"keccak256": "^1.0.6",
+		"truffle": "^5.6.7",
+		"@openzeppelin/contracts": "^4.9.5"
+	},
+	"devDependencies": {
+		"@openzeppelin/contracts": "^4.9.5"
+	}
+}

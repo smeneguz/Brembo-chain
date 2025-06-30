@@ -1,0 +1,27 @@
+{
+	"name": "brembochain",
+	"version": "0.0.1",
+	"private": true,
+	"license": "MIT",
+	"devDependencies": {
+		"@types/cache-manager": "^4.0.5",
+		"@types/ssh2-sftp-client": "^9.0.3",
+		"typescript": "^5.2.2"
+	},
+	"workspaces": [
+		"apps/*",
+		"packages/*"
+	],
+	"dependencies": {
+		"@nestjs/cache-manager": "^2.1.1",
+		"@types/xml2js": "^0.4.12",
+		"cache-manager": "^5.2.4",
+		"cache-manager-redis-yet": "^4.1.2",
+		"redis": "^4.6.10",
+		"redis-errors": "^1.2.0",
+		"redis-parser": "^3.0.0",
+		"ssh2-sftp-client": "^10.0.3",
+		"truffle": "^5.11.5",
+		"xml2js": "^0.6.2"
+	}
+}

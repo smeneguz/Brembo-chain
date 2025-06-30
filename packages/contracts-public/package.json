@@ -1,0 +1,19 @@
+{
+  "name": "@brembochain/contracts-public",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "ganache": "ganache -s 1234 -p 7545 --networkId 1337",
+    "deploy": "truffle migrate --network private"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "@openzeppelin/contracts": "^4.9.3",
+    "@truffle/hdwallet-provider": "^2.1.15",
+    "dotenv": "^16.4.5",
+    "ganache": "^7.9.2"
+  }
+}

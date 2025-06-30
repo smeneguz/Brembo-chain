@@ -1,0 +1,249 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../src/features/prisma/client"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Profile {
+  id Int @id @default(autoincrement())
+
+  login String @unique
+
+  name    String
+  surname String
+  email   String
+  role    String
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([login])
+  @@map("profiles")
+}
+
+//Statore
+model Stators {
+  id Int @id @default(autoincrement())
+
+  codiceMotore String @unique
+  tokenId      Int    @unique
+  //altro da aggiungere??
+
+  phases StatorPhase[]
+
+  createdAt DateTime @default(now())
+
+  updatedAt DateTime @updatedAt
+
+  @@map("stators")
+}
+
+model StatorPhase {
+  id Int @id @default(autoincrement())
+
+  //Dati Generali
+  statoComponente       String
+  stazioneDiLavorazione String
+  dataInizioProcesso    DateTime
+  dataFineProcesso      DateTime?
+  lottoHousing          String?
+  lottoResina           String?
+  lottoIndurente        String?
+  lottoCuscinetti       String?
+
+  consumoEnergiaMotore Float
+
+  stator   Stators @relation(fields: [statorId], references: [id]) //elemento relazionale con la tabella del processo e la fase relativa
+  statorId Int
+
+  //hash file
+  hash String
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("statorPhases")
+}
+
+//Rotore
+
+model Rotors {
+  id Int @id @default(autoincrement())
+
+  codiceFlangia String @unique
+  tokenId       Int    @unique
+
+  phases RotorPhase[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("rotors")
+}
+
+model RotorPhase {
+  id Int @id @default(autoincrement())
+
+  //Dati Generali
+  statoComponente       String
+  stazioneDiLavorazione String
+  dataInizioProcesso    DateTime
+  dataFineProcesso      DateTime
+
+  lottoFlangia    String?
+  lottoCuscinetto String?
+  lottoPCB        String?
+  lottoRotore     String?
+  lottoPignone    String?
+
+  consumoEnergiaMotore Float
+
+  rotor   Rotors @relation(fields: [rotorId], references: [id])
+  rotorId Int
+
+  //hash file
+  hash String
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("rotorPhases")
+}
+
+//Assemblaggio
+
+model Assembly {
+  id Int @id @default(autoincrement())
+
+  codiceMotore String @unique
+  tokenId      Int    @unique
+
+  phases AssemblyPhase[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("assemblies")
+}
+
+model AssemblyPhase {
+  id Int @id @default(autoincrement())
+
+  //Dati Generali
+  statoComponente       String
+  stazioneDiLavorazione String
+  dataInizioProcesso    DateTime
+  dataFineProcesso      DateTime
+
+  lottoOR       String?
+  lottoScrew    String?
+  codiceFlangia String?
+
+  consumoEnergiaMotore Float
+
+  assembly   Assembly @relation(fields: [assemblyId], references: [id])
+  assemblyId Int
+
+  //hash File
+  hash String
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("assemblyPhases")
+}
+
+model Espe {
+  id Int @id @unique @default(autoincrement())
+
+  codiceMotore String?     @unique
+  tokenId      Int?
+  cpd          String      @unique
+  phases       EspePhase[]
+  passkey      String
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("espe")
+}
+
+model EspePhase {
+  id Int @id @default(autoincrement())
+
+  espeId      Int
+  espe        Espe   @relation(fields: [espeId], references: [id])
+  phase       Int
+  espeIdPhase String @unique
+
+  codiceMotore              String?
+  operazione                String?
+  quantitaTotaleComponenteA Float? //in excell mette 0.10g
+  descrizioneComponenteA    String?
+  quantitaTotaleComponenteB Float?
+  descrizioneComponenteB    String?
+  dettaglioApplicativo      String?
+  specificaORequisito       String?
+  //configurazione banco
+  bancoOStrumento           String?
+  accessoriBanco            String?
+  integrazioneBanco         String?
+  fixtureProgetto           String?
+  //avvitatura
+  verso                     String?
+  accostoRpm                Float?
+  accostoNm                 Float?
+  serraggioRpm              Float?
+  serraggioNm               Float?
+  serraggioGradi            Float?
+  outputRangeGradi          Float?
+  outputRangeNm             Float?
+
+  //piantaggio
+  discesa Float?
+  quota   Float?
+  forza   Float?
+  flesso  Float?
+  battuta Float?
+
+  //collaudo
+  pressione            Float?
+  riempSvuot           Float?
+  stabOn               Float?
+  stabOff              Float?
+  misura               Float?
+  deltaP               Float?
+  portata              Float?
+  outputRangeDeltaP    Float?
+  outputRangePressione Float?
+  outputRangePortata   Float?
+
+  //verifica
+  verificaOutputRange Float?
+
+  noteProcesso String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("espePhases")
+}
+
+model VerificationXml {
+  id Int @id @unique @default(autoincrement())
+
+  status       Boolean
+  hashToVerify String
+  process      String //rotor || motor || assembly || espe
+
+  verificationDate DateTime @default(now())
+
+  @@map("verifications")
+}

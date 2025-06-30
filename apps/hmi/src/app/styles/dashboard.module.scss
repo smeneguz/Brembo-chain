@@ -1,0 +1,21 @@
+.card {
+    width: 100%;
+    transition: background-color 0.3s ease;
+  
+    &:hover {
+      background-color: #b6ecbd; // Colore di sfondo al passaggio del mouse
+    }
+}
+
+.table {
+    width: 100%;
+    height: 400px; // Imposta un'altezza fissa per la Card
+    overflow: hidden; // Nasconde l'overflow del contenuto
+    display: flex;
+    flex-direction: column;
+  
+    
+    flex: 1; // Permette al contenuto della card di occupare lo spazio disponibile
+    overflow-y: auto; // Abilita lo scroll verticale
+    
+  }

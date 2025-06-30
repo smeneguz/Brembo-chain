@@ -1,0 +1,14 @@
+.sortable {
+	text-decoration: underline;
+	cursor: pointer;
+	width: fit-content;
+	white-space: normal;
+	word-wrap: break-word; /* Opzionale - se vuoi consentire il wrapping delle parole lunghe */
+	overflow: hidden;
+}
+
+.content {
+	white-space: normal;
+	word-wrap: break-word; /* Opzionale - se vuoi consentire il wrapping delle parole lunghe */
+	overflow: auto;
+}

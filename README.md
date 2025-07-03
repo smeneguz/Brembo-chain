@@ -1,4 +1,4 @@
-# Brembochain HMI Suite
+# ManufacturinChain HMI Suite
 
 ## Installation
 

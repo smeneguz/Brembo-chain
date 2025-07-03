@@ -1,4 +1,4 @@
-# ManufacturinChain HMI Suite
+# ManufacturingChain HMI Suite
 
 ## Installation
 
